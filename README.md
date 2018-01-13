@@ -10,9 +10,6 @@ With this small library you can do that!
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ecto_facade` to your list of dependencies in `mix.exs`:
-
 ```elixir
 def deps do
   [
@@ -21,7 +18,20 @@ def deps do
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/ecto_facade](https://hexdocs.pm/ecto_facade).
+## Usage
+
+```elixir
+defmodule MyApp.FacadeRepo do
+  use EctoFacade.Repo,
+    master_repo: MyApp.Repo,
+    read_repos: [MyApp.ReadReplicaOne, MyApp.ReadReplicaTwo],
+    algorithm: MyApp.Repo.ReadAlgorithm
+end
+```
+
+for more information please check documentation
+
+## Documentation
+
+[Hex.pm](https://hexdocs.pm/ecto_facade)
 
