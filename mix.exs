@@ -29,7 +29,7 @@ defmodule EctoFacade.Mixfile do
     [
       maintainers: ["Bart Lecki"],
       licenses: ["MIT License"],
-      links: %{"GitHub" => "https://github.com/azranel/ecto_facade"}
+      links: %{"GitHub" => "https://github.com/azranel/ecto_facade"},
       source_url: "https://github.com/azranel/ecto_facade",
       homepage_url: "https://github.com/azranel/ecto_facade"
     ]
