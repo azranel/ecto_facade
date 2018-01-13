@@ -33,6 +33,10 @@ MyApp.FacadeRepo.all(MyApp.SomeSchema) # and other operations that you would do 
 
 for more information please check documentation
 
+## Usage (testing)
+
+When in test just configure you FacadeRepo to use only master repository. This way you won't have issues with separate repositories with Sandbox adapter.
+
 ## Documentation
 
 [Hex.pm](https://hexdocs.pm/ecto_facade)
