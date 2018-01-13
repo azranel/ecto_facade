@@ -2,6 +2,8 @@ defmodule EctoFacade.Repo do
   @moduledoc """
   Facade repository that should be used for all operations regarding ecto.
 
+  It forwards all write/update/delete operations to `master_repo` and do all read operations on one of `read_repos` - which read repository is depending on the algorithm.
+
   Should be used as:
     use EctoFacade.Repo, master_repo: MyApp.Repo,
       read_repos: [MyApp.ReadRepoOne, MyApp.ReadRepoTwo],
