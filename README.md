@@ -27,6 +27,8 @@ defmodule MyApp.FacadeRepo do
     read_repos: [MyApp.ReadReplicaOne, MyApp.ReadReplicaTwo],
     algorithm: MyApp.Repo.ReadAlgorithm
 end
+
+MyApp.FacadeRepo.all(MyApp.SomeSchema) # and other operations that you would do with ecto repo
 ```
 
 for more information please check documentation
