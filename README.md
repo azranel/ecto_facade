@@ -1,6 +1,12 @@
 # EctoFacade
 
-**TODO: Add description**
+EctoFacade can be used as interface through which you can query multiple repositories.
+Main objective of this is to use separate separate repository for writes and separate repository for reads.
+
+For example:
+
+Lets say you have PostgreSQL database replicated to 4 different slave nodes that should be used for reads only.
+With this small library you can do that!
 
 ## Installation
 
