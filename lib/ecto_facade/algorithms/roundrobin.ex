@@ -18,9 +18,9 @@ defmodule EctoFacade.Algorithms.Roundrobin do
     end
 
     def get_next_repo() do
-      [current_repo | repos_without_current] = Agent.get(__MODULE__, &(&1))
+      [current_repo | repos_without_current] = Agent.get(__MODULE__, & &1)
       new_repos = repos_without_current ++ [current_repo]
-      Agent.update(__MODULE__, fn (_) -> new_repos end)
+      Agent.update(__MODULE__, fn _ -> new_repos end)
       current_repo
     end
   end
