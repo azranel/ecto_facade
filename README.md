@@ -31,6 +31,10 @@ end
 MyApp.FacadeRepo.all(MyApp.SomeSchema) # and other operations that you would do with ecto repo
 ```
 
+Possible algorithms for selecting repository for read operation:
+- `EctoFacade.Algorithms.Random` - selects randomly repository
+- `EctoFacade.Algorithms.Roundrobin` - selects next repository in list till last and then goes again from beginning
+
 for more information please check documentation
 
 ## Usage (testing)
