@@ -7,7 +7,7 @@ defmodule EctoFacade.Mixfile do
       version: "0.1.0",
       description: "Ecto Facade Repository that allows to separate write from read operations",
       elixir: "~> 1.5",
-      start_permanent: Mix.env == :prod,
+      start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package()
     ]
