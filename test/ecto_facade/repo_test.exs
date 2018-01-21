@@ -10,7 +10,8 @@ defmodule EctoFacade.RepoTest do
   end
 
   defmodule TestFacadeComplexRepo do
-    use EctoFacade.Repo, master_repo: TestRepo,
+    use EctoFacade.Repo,
+      master_repo: TestRepo,
       read_repos: [TestReadRepoOne, TestReadRepoTwo]
   end
 
@@ -19,12 +20,12 @@ defmodule EctoFacade.RepoTest do
       assert TestFacadeRepo.master_repo() == TestRepo
     end
   end
-  
+
   describe "read_repos/0" do
     test "read_repos/0 should return list containing master repo only by default" do
       assert TestFacadeRepo.read_repos() == [TestRepo]
     end
-  
+
     test "read_repos/0 should return list of read repos when configured" do
       assert TestFacadeComplexRepo.read_repos() == [TestReadRepoOne, TestReadRepoTwo]
     end

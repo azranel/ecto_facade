@@ -19,8 +19,10 @@ defmodule EctoFacade.Repo do
   defmacro __using__(opts) do
     quote bind_quoted: [opts: opts] do
       master_repo = Keyword.get(opts, :master_repo)
+
       if master_repo == nil do
-        raise ArgumentError, "Master repository should be provided to modules using EctoFacade.Repo"
+        raise ArgumentError,
+              "Master repository should be provided to modules using EctoFacade.Repo"
       end
 
       algorithm = Keyword.get(opts, :algorithm, EctoFacade.Algorithms.Random)
@@ -38,7 +40,7 @@ defmodule EctoFacade.Repo do
       def read_repos, do: @read_repos
 
       # Master repo write/update/delete operations
-      defdelegate insert_all(schema_or_source, entries, opts \\ []), to: @master_repo  
+      defdelegate insert_all(schema_or_source, entries, opts \\ []), to: @master_repo
       defdelegate update_all(queryable, updates, opts \\ []), to: @master_repo
       defdelegate delete_all(queryable, opts \\ []), to: @master_repo
       defdelegate insert(struct, opts \\ []), to: @master_repo
@@ -65,9 +67,11 @@ defmodule EctoFacade.Repo do
 
       def get!(queryable, id, opts \\ []), do: get_read_repo().get!(queryable, id, opts)
 
-      def get_by(queryable, clauses, opts \\ []), do: get_read_repo().get_by(queryable, clauses, opts)
+      def get_by(queryable, clauses, opts \\ []),
+        do: get_read_repo().get_by(queryable, clauses, opts)
 
-      def get_by!(queryable, clauses, opts \\ []), do: get_read_repo().get_by!(queryable, clauses, opts)
+      def get_by!(queryable, clauses, opts \\ []),
+        do: get_read_repo().get_by!(queryable, clauses, opts)
 
       def one(queryable, opts \\ []), do: get_read_repo().one(queryable, opts)
 
