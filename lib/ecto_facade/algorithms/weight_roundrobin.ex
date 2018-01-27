@@ -15,7 +15,7 @@ defmodule EctoFacade.Algorithms.WeightRoundrobin do
     5. RepoThree
     6. RepoThree
     7. RepoOne
-
+    etc etc etc
   """
   @behaviour EctoFacade.Algorithm
   alias EctoFacade.Algorithms.WeightRoundrobin.Storage
