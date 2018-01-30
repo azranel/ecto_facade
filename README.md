@@ -34,12 +34,15 @@ MyApp.FacadeRepo.all(MyApp.SomeSchema) # and other operations that you would do 
 Possible algorithms for selecting repository for read operation:
 - `EctoFacade.Algorithms.Random` - selects randomly repository
 - `EctoFacade.Algorithms.Roundrobin` - selects next repository in list till last and then goes again from beginning
+- `EctoFacade.Algorithms.WeightRoundrobin` - selects next repository in list depending on weight. Check module documentation for more info.
+
+or your own that implement behaviour `EctoFacade.Algorithm`.
 
 for more information please check documentation
 
 ## Usage (testing)
 
-When in test just configure you FacadeRepo to use only master repository. This way you won't have issues with separate repositories with Sandbox adapter.
+When in test just configure you FacadeRepo to use only master repository. This way you won't have issues with separate repositories with Sandbox Ecto adapter.
 
 ## Documentation
 
