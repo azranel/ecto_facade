@@ -8,11 +8,13 @@ defmodule EctoFacade.Repo do
     use EctoFacade.Repo, master_repo: MyApp.Repo,
       read_repos: [MyApp.ReadRepoOne, MyApp.ReadRepoTwo],
       algorithm: MyApp.CustomReadRepoAlgorithm
+      fallback_to_master: false
 
   Possible options:
     - `master_repo` - only option that is required, it should be main ecto repository used for writes (and reads if you use only one ecto repository)
     - `read_repos` - (optional) list of repositories that should be used for read operations. Defaults to [master_repo].
     - `algorithm` - (optional) Module that adhere to EctoFacade.Algorithm behaviour. Defaults to EctoFacade.Algorithms.Random
+    - `fallback_to_master` - (optional) When no read repository is present, should query fallback to master repo (default: true)
   """
 
   @doc false
@@ -26,10 +28,12 @@ defmodule EctoFacade.Repo do
       end
 
       algorithm = Keyword.get(opts, :algorithm, EctoFacade.Algorithms.Random)
+      fallback_to_master = Keyword.get(opts, :fallback_to_master, true)
 
       @master_repo master_repo
       @read_repos Keyword.get(opts, :read_repos, [master_repo])
       @algorithm algorithm
+      @fallback_to_master fallback_to_master
 
       unless is_list(@read_repos) do
         raise ArgumentError, "read_repos should be a list of repositories"
@@ -59,34 +63,128 @@ defmodule EctoFacade.Repo do
       end
 
       # Read repos operations
-      def all(queryable, opts \\ []), do: get_read_repo().all(queryable, opts)
 
-      def stream(queryable, opts \\ []), do: get_read_repo().stream(queryable, opts)
+      if @fallback_to_master do
+        def all(queryable, opts \\ []) do
+          try do
+            get_read_repo().all(queryable, opts)
+          catch
+            _ -> @master_repo.all(queryable, opts)
+          end
+        end
 
-      def get(queryable, id, opts \\ []), do: get_read_repo().get(queryable, id, opts)
+        def stream(queryable, opts \\ []) do
+          try do
+            get_read_repo().stream(queryable, opts)
+          catch
+            _ -> @master_repo.stream(queryable, opts)
+          end
+        end
 
-      def get!(queryable, id, opts \\ []), do: get_read_repo().get!(queryable, id, opts)
+        def get(queryable, id, opts \\ []) do
+          try do
+            get_read_repo().get(queryable, id, opts)
+          catch
+            _ -> @master_repo.get(queryable, id, opts)
+          end
+        end
 
-      def get_by(queryable, clauses, opts \\ []),
-        do: get_read_repo().get_by(queryable, clauses, opts)
+        def get!(queryable, id, opts \\ []) do
+          try do
+            get_read_repo().get!(queryable, id, opts)
+          catch
+            _ -> @master_repo.get!(queryable, id, opts)
+          end
+        end
 
-      def get_by!(queryable, clauses, opts \\ []),
-        do: get_read_repo().get_by!(queryable, clauses, opts)
+        def get_by(queryable, clauses, opts \\ []) do
+          try do
+            get_read_repo().get_by(queryable, clauses, opts)
+          catch
+            _ -> @master_repo.get_by(queryable, clauses, opts)
+          end
+        end
 
-      def one(queryable, opts \\ []), do: get_read_repo().one(queryable, opts)
+        def get_by!(queryable, clauses, opts \\ []) do
+          try do
+            get_read_repo().get_by!(queryable, clauses, opts)
+          catch
+            _ -> @master_repo.get_by!(queryable, clauses, opts)
+          end
+        end
 
-      def one!(queryable, opts \\ []), do: get_read_repo().one!(queryable, opts)
+        def one(queryable, opts \\ []) do
+          try do
+            get_read_repo().one(queryable, opts)
+          catch
+            _ -> @master_repo.one(queryable, opts)
+          end
+        end
 
-      def aggregate(queryable, aggregate, field, opts \\ [])
-          when aggregate in [:count, :avg, :max, :min, :sum] and is_atom(field) do
-        get_read_repo().aggregate(queryable, aggregate, field, opts)
+        def one!(queryable, opts \\ []) do
+          try do
+            get_read_repo().one!(queryable, opts)
+          catch
+            _ -> @master_repo.one!(queryable, opts)
+          end
+        end
+
+        def aggregate(queryable, aggregate, field, opts \\ [])
+            when aggregate in [:count, :avg, :max, :min, :sum] and is_atom(field) do
+          try do
+            get_read_repo().aggregate(queryable, aggregate, field, opts)
+          catch
+            _ -> @master_repo.aggregate(queryable, aggregate, field, opts)
+          end
+        end
+
+        def preload(struct_or_structs_or_nil, preloads, opts \\ []) do
+          try do
+            get_read_repo().preload(struct_or_structs_or_nil, preloads, opts)
+          catch
+            _ -> @master_repo.preload(struct_or_structs_or_nil, preloads, opts)
+          end
+        end
+
+        def load(schema_or_types, data) do
+          try do
+            get_read_repo().load(schema_or_types, data)
+          catch
+            _ -> @master_repo.load(schema_or_types, data)
+          end
+        end
+      else
+        def all(queryable, opts \\ []) do
+          get_read_repo().all(queryable, opts)
+        end
+
+        def stream(queryable, opts \\ []), do: get_read_repo().stream(queryable, opts)
+
+        def get(queryable, id, opts \\ []), do: get_read_repo().get(queryable, id, opts)
+
+        def get!(queryable, id, opts \\ []), do: get_read_repo().get!(queryable, id, opts)
+
+        def get_by(queryable, clauses, opts \\ []),
+          do: get_read_repo().get_by(queryable, clauses, opts)
+
+        def get_by!(queryable, clauses, opts \\ []),
+          do: get_read_repo().get_by!(queryable, clauses, opts)
+
+        def one(queryable, opts \\ []), do: get_read_repo().one(queryable, opts)
+
+        def one!(queryable, opts \\ []), do: get_read_repo().one!(queryable, opts)
+
+        def aggregate(queryable, aggregate, field, opts \\ [])
+            when aggregate in [:count, :avg, :max, :min, :sum] and is_atom(field) do
+          get_read_repo().aggregate(queryable, aggregate, field, opts)
+        end
+
+        def preload(struct_or_structs_or_nil, preloads, opts \\ []) do
+          get_read_repo().preload(struct_or_structs_or_nil, preloads, opts)
+        end
+
+        def load(schema_or_types, data), do: get_read_repo().load(schema_or_types, data)
       end
-
-      def preload(struct_or_structs_or_nil, preloads, opts \\ []) do
-        get_read_repo().preload(struct_or_structs_or_nil, preloads, opts)
-      end
-
-      def load(schema_or_types, data), do: get_read_repo().load(schema_or_types, data)
 
       # Helper methods
 
