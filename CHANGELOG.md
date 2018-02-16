@@ -1,4 +1,6 @@
 Waiting for release:
+
+# 0.2.1
 - RoundRobin strategy uses now atomic operation (thanks to @novaugust)
 - Expanded readme to provide more information on how to use EctoFacade
 
