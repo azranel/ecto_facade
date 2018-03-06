@@ -4,7 +4,7 @@ defmodule EctoFacade.Mixfile do
   def project do
     [
       app: :ecto_facade,
-      version: "0.2.1",
+      version: "0.2.2",
       description: "Ecto Facade Repository that allows to separate write from read operations",
       elixir: "~> 1.5",
       start_permanent: Mix.env() == :prod,
