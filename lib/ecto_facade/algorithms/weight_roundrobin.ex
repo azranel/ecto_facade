@@ -17,29 +17,20 @@ defmodule EctoFacade.Algorithms.WeightRoundrobin do
     7. RepoOne
     etc etc etc
   """
+
   @behaviour EctoFacade.Algorithm
-  alias EctoFacade.Algorithms.WeightRoundrobin.Storage
+
+  alias EctoFacade.Algorithms.Roundrobin
 
   def get_repo(repos) do
-    Storage.start_link(repos)
-    Storage.get_next_repo()
+    repos
+    |> build_list()
+    |> Roundrobin.get_repo()
   end
 
-  defmodule Storage do
-    use Agent
-
-    def start_link(repos) do
-      ordered_repos = repos |> Enum.flat_map(fn ({repo, weight}) ->
-        List.duplicate([repo], weight + 1)
-      end) |> List.flatten
-      Agent.start_link(fn -> ordered_repos end, name: __MODULE__)
-    end
-
-    def get_next_repo() do
-      [current_repo | repos_without_current] = Agent.get(__MODULE__, & &1)
-      new_repos = repos_without_current ++ [current_repo]
-      Agent.update(__MODULE__, fn _ -> new_repos end)
-      current_repo
-    end
+  defp build_list(repos) do
+    Enum.flat_map(repos, fn ({repo, weight}) ->
+      List.duplicate(repo, weight + 1)
+    end)
   end
 end
